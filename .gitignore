@@ -1,0 +1,8 @@
+Binaries/*
+Intermediate/*
+DerivedDataCache/*
+Saved/*
+idea/*
+.vs/*
+
+*.sln
