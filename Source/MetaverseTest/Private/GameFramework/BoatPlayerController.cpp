@@ -32,6 +32,8 @@ void ABoatPlayerController::BeginPlay()
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(GetPawn()->InputComponent);
 	checkf(EnhancedInputComponent, TEXT("Pawn does not have an EnhancedInputComponent"));
 	EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ABoatPlayerController::OnMovementActionTriggered);
+	EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ABoatPlayerController::OnMovementActionTriggered);
+	
 }
 
 void ABoatPlayerController::OnMovementActionTriggered_Implementation(const FInputActionValue& InputActionValue)
