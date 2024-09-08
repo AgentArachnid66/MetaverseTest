@@ -32,6 +32,11 @@ void ABoatPawnBase::BrakeBoat_Implementation(float Value)
 }
 
 
+float ABoatPawnBase::GetSpeedRatio() const
+{
+	return GetMovementComponent()->Velocity.Size() / GetMovementComponent()->GetMaxSpeed();
+}
+
 // Called when the game starts or when spawned
 void ABoatPawnBase::BeginPlay()
 {

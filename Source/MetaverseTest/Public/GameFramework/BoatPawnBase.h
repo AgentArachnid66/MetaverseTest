@@ -31,11 +31,7 @@ public:
 	FORCEINLINE UFloatingPawnMovement* GetFloatingMovementComponent() const { return MovementComponent; }
 
 	UFUNCTION(BlueprintPure, Category = "Boat Movement")
-	FORCEINLINE float GetSteerInput() const { return SteerInput; }
-
-
-	UPROPERTY(BlueprintAssignable, Category = "Boat Movement")
-	FBoatMoveInputDelegate OnSteerInputUpdated;
+	float GetSpeedRatio() const;
 	
 protected:
 	// Called when the game starts or when spawned
