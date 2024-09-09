@@ -12,7 +12,6 @@ ABoatPawnBase::ABoatPawnBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	MovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("MovementComponent"));
-
 }
 
 void ABoatPawnBase::ThrustForward_Implementation(float Value)
@@ -23,7 +22,6 @@ void ABoatPawnBase::ThrustForward_Implementation(float Value)
 void ABoatPawnBase::SteerBoat_Implementation(float Value)
 {
 	UE_LOG(LogBoatCore, Verbose, TEXT("SteerBoat: %f"), Value);
-	RawSteeringInput = Value;
 }
 
 void ABoatPawnBase::BrakeBoat_Implementation(float Value)
@@ -41,24 +39,32 @@ float ABoatPawnBase::GetSpeedRatio() const
 void ABoatPawnBase::BeginPlay()
 {
 	Super::BeginPlay();
+	RandomWaveOffset = FMath::RandRange(-5.0f, 5.0f);
+}
+
+void ABoatPawnBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	// The Wave Period is the time it takes for a wave to complete a full cycle and
+	// is proportional to the speed of the boat. The faster the boat, the longer the wave period.
+	const float& WavePeriod = WavePeriodCurve->GetFloatValue(GetSpeedRatio());
 	
+	// Wave Height is the amplitude of the wave, which is inversely proportional to the speed of the boat.
+	// With the boat moving at full speed, the wave height is lower than when the boat is stationary.
+	const float& WaveHeight = WaveHeightCurve->GetFloatValue(GetSpeedRatio());
+	
+	// Now we need to combine these values to get the current wave offset.
+	// Wave Definition is the value of the wave at a given point in time and uses the previous values to calculate it.
+	const float WavePeriodHeight = WaveDefinitonCurve->GetFloatValue(WaveHeight * FMath::Sin((GetWorld()->GetTimeSeconds() + RandomWaveOffset) / WavePeriod));
+	
+	TargetBoatWaveOffset = FVector(0.0f, 0.0f, WavePeriodHeight);
+
+	UE_LOG(LogBoatCore, Log, TEXT("WaveHeight: %f"), WaveHeight);
 }
 
 // Called to bind functionality to input
 void ABoatPawnBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
-
-void ABoatPawnBase::AsyncPhysicsTickActor(float DeltaTime, float SimTime)
-{
-	Super::AsyncPhysicsTickActor(DeltaTime, SimTime);
-
-	// Interpolate the steering input
-	TargetSteerInput = FMath::FInterpTo(TargetSteerInput, RawSteeringInput, DeltaTime, TargetSteerInterpSpeed);
-	UE_LOG(LogBoatCore, Log, TEXT("TargetSteerInput: %f"), TargetSteerInput);
-	SteerInput = FMath::FInterpTo(SteerInput, TargetSteerInput, DeltaTime, SteerInterpSpeed);
-	UE_LOG(LogBoatCore, Log, TEXT("SteerInput: %f"), SteerInput);
-	OnSteerInputUpdated.Broadcast(SteerInput);
 }

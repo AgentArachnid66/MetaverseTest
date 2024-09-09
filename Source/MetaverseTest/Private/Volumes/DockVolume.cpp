@@ -48,7 +48,7 @@ void ADockVolume::NotifyActorBeginOverlap(AActor* OtherActor)
 	}, DockTime, false);
 
 	// Adds the timer to the map
-	DockTimers.Add(OtherActor, FTimerHandle());
+	DockTimers.Add(OtherActor, TimerHandle);
 }
 
 void ADockVolume::NotifyActorEndOverlap(AActor* OtherActor)
@@ -76,12 +76,7 @@ void ADockVolume::NotifyActorEndOverlap(AActor* OtherActor)
 	{
 		GetWorldTimerManager().ClearTimer(TimerHandle);
 		TimerHandle.Invalidate();
-		
-		// No need to remove the timer from the map,
-		// it will be overwritten on the next overlap
-		// Could potentially remove it here if desired
-
-			
+					
 		// Cancel the docking process
 		IDockTargetInterface::Execute_OnDockCancel(OtherActor);
 	}
