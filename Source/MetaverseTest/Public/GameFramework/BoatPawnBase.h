@@ -7,8 +7,6 @@
 #include "GameFramework/Pawn.h"
 #include "BoatPawnBase.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBoatMoveInputDelegate, float, Value);
-
 UCLASS()
 class METAVERSETEST_API ABoatPawnBase : public APawn
 {
@@ -26,7 +24,7 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Boat Movement")
 	void BrakeBoat(float Value);
-	
+
 	UFUNCTION(BlueprintPure, Category = "Boat Movement")
 	FORCEINLINE UFloatingPawnMovement* GetFloatingMovementComponent() const { return MovementComponent; }
 
@@ -36,23 +34,29 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	virtual void Tick(float DeltaTime) override;
+	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	virtual void AsyncPhysicsTickActor(float DeltaTime, float SimTime) override;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Boat Movement")
 	TObjectPtr<UFloatingPawnMovement> MovementComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Boat Movement")
-	float RawSteeringInput = 0.0f;
-
-	float SteerInput = 0.0f;
-	float TargetSteerInput = 0.0f;
+	UCurveFloat* WaveHeightCurve;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Boat Movement")
-	float SteerInterpSpeed;
+	UCurveFloat* WavePeriodCurve;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Boat Movement")
-	float TargetSteerInterpSpeed;
+	UCurveFloat* WaveDefinitonCurve;
+	
+	UFUNCTION(BlueprintPure, Category = "Boat Movement")
+	FORCEINLINE FVector GetTargetBoatWaveOffset() const { return TargetBoatWaveOffset; }
+	
+private:
+
+	FVector TargetBoatWaveOffset;
+	float RandomWaveOffset;
 };
