@@ -24,12 +24,22 @@ public:
 
 
 protected:
+	/**
+	* @brief Input mapping context that defines how input is mapped to actions.
+	*/
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputMappingContext* BoatInputMapping;
 
+	/**
+	 * @brief Input action that handles movement-related inputs (e.g., forward thrust, steering).
+	 */
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* MovementAction;
 
+	/**
+	 * @brief Triggered when a movement input action is detected.
+	 * @param InputActionValue The value associated with the movement input action (e.g., strength or direction).
+	 */
 	UFUNCTION(BlueprintNativeEvent, Category = "Input")
 	void OnMovementActionTriggered(const FInputActionValue& InputActionValue);
 };

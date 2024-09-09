@@ -31,6 +31,8 @@ void ABoatPlayerController::BeginPlay()
 	// Get the Pawn's input component
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(GetPawn()->InputComponent);
 	checkf(EnhancedInputComponent, TEXT("Pawn does not have an EnhancedInputComponent"));
+
+	// Need both Triggered and Completed events to handle continuous input, and for when the input has been released respectively.
 	EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ABoatPlayerController::OnMovementActionTriggered);
 	EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Completed, this, &ABoatPlayerController::OnMovementActionTriggered);
 	
