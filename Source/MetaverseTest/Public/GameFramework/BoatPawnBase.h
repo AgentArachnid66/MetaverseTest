@@ -11,6 +11,10 @@ UCLASS()
 class METAVERSETEST_API ABoatPawnBase : public APawn
 {
 	GENERATED_BODY()
+
+public:
+	ABoatPawnBase();
+	
 	/**
 	 * @brief Applies forward thrust to the boat.
 	 * @param Value The strength or amount of thrust to apply (can be positive or negative but negative results in braking).
